@@ -1,4 +1,4 @@
-#dotnet-config-file-encryption-tool
+# dotnet-config-file-encryption-tool
 Command-line tool to encrypt/decrypt .NET console application configuration files, based on *__NAnt__*.
 
 Usage:
