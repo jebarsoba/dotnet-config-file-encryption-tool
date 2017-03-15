@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<project name="MMS-SAP-Integration">	
+	<property name="framework-dir" value="C:\Windows\Microsoft.NET\Framework\v4.0.30319" />
+	<property name="bin-dir" value="C:\app\bin\Debug" />
+	<property name="config-filename" value="app.exe.config" />
+	<property name="aspnet_regiis_installation-dir" value="${framework-dir}/aspnet_regiis_bin" />
+
+	<target name="encrypt">
+		<property name="command" value="-pef" />
+
+		<call target="encrypt-decrypt" />
+	</target>
+
+	<target name="decrypt">
+		<property name="command" value="-pdf" />
+
+		<call target="encrypt-decrypt" />
+	</target>
+
+	<target name="encrypt-decrypt">
+		<mkdir dir="${aspnet_regiis_installation-dir}" />
+
+		<copy todir="${aspnet_regiis_installation-dir}">
+			<fileset basedir="${bin-dir}">
+				<include name="*.dll" />
+			</fileset>
+		</copy>
+
+		<copy todir="${framework-dir}">
+			<fileset basedir="${bin-dir}">
+				<include name="aspnet_regiis.exe.config" />
+			</fileset>
+		</copy>
+
+		<move file="${bin-dir}/${config-filename}" tofile="${bin-dir}/web.config" />
+
+		<property name="config-setion-name" value="appSettings" />
+		<call target="encrypt-decrypt-config-section"/>
+
+		<move file="${bin-dir}/web.config" tofile="${bin-dir}/${config-filename}" />
+
+		<delete dir="${aspnet_regiis_installation-dir}" />
+
+		<delete file="${framework-dir}/aspnet_regiis.exe.config" />
+	</target>
+
+	<target name="encrypt-decrypt-config-section">
+		<exec program="aspnet_regiis.exe" basedir="${framework-dir}" >
+			<arg value="${command}" />
+			<arg value="${config-setion-name}" />
+			<arg value="${bin-dir}" />
+		</exec>
+	</target>
+</project>
